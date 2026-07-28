@@ -1,0 +1,7 @@
+.terraform
+.terraform.lock.hcl
+client.ovpn
+terraform.tfstate
+terraform.tfstate.backup
+openvpn.ovpn
+terraform.tfvars
