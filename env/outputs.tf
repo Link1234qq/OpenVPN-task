@@ -69,6 +69,6 @@ output "openvpn_public_ip" {
 }
 
 output "openvpn_client_config_hint" {
-  value       = "scp -i <key.pem> ec2-user@${module.vpn.public_ip}:${module.vpn.client_config_path} ./client.ovpn"
+  value       = "scp -i openvpn.pem ec2-user@${module.vpn.public_ip}:${module.vpn.client_config_path} ./client.ovpn"
   description = "Command to download the OpenVPN client profile"
 }
