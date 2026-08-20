@@ -1,19 +1,20 @@
 #!/bin/bash
-set -e
+exec > /var/log/grafana-userdata.log 2>&1
+set -x
 
-# Update system and install Docker
-yum update -y
-yum install -y docker
+dnf install -y docker
+systemctl enable --now docker
 
-# Start Docker service
-systemctl start docker
-systemctl enable docker
+for i in $(seq 1 30); do
+  if docker info >/dev/null 2>&1; then
+    break
+  fi
+  sleep 2
+done
 
-# Create Grafana provisioning directories
 mkdir -p /opt/grafana/provisioning/datasources
 mkdir -p /opt/grafana/provisioning/dashboards
 
-# Create Prometheus datasource config
 cat > /opt/grafana/provisioning/datasources/prometheus.yml << 'DATASOURCE_CONFIG'
 apiVersion: 1
 datasources:
@@ -25,17 +26,18 @@ datasources:
     editable: true
 DATASOURCE_CONFIG
 
-# Run Grafana container
+docker pull ${docker_image} || docker pull ${docker_image}
+docker rm -f grafana 2>/dev/null || true
+
 docker run -d \
   --name grafana \
   --restart always \
   -p 3000:3000 \
   -e GF_SECURITY_ADMIN_PASSWORD="${grafana_admin_password}" \
-  -e GF_INSTALL_PLUGINS=grafana-piechart-panel \
   -v /opt/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro \
   -v grafana_data:/var/lib/grafana \
   ${docker_image}
 
-# Wait for Grafana to be ready
-sleep 5
-docker logs grafana || true
+sleep 10
+docker ps -a
+curl -sI http://127.0.0.1:3000/login || true

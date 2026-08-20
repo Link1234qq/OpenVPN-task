@@ -17,8 +17,10 @@ module "vpc" {
   manage_default_route_table    = false
   map_public_ip_on_launch       = true
 
-  enable_nat_gateway = true
-  single_nat_gateway = true
+  enable_nat_gateway     = true
+  single_nat_gateway     = true
+  enable_dns_hostnames   = true
+  enable_dns_support     = true
 
   tags = {
     Name        = local.vpc_name

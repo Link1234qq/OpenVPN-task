@@ -1,25 +1,28 @@
 #!/bin/bash
-set -e
+exec > /var/log/prometheus-userdata.log 2>&1
+set -x
 
-# Update system and install Docker
-yum update -y
-yum install -y docker
+dnf install -y docker
+systemctl enable --now docker
 
-# Start Docker service
-systemctl start docker
-systemctl enable docker
+for i in $(seq 1 30); do
+  if docker info >/dev/null 2>&1; then
+    break
+  fi
+  sleep 2
+done
 
-# Create Prometheus config and storage directory
 mkdir -p /opt/prometheus/data
 cat > /opt/prometheus/prometheus.yml << 'PROMETHEUS_CONFIG'
 ${prometheus_config}
 PROMETHEUS_CONFIG
 
-# Ensure permissions for Prometheus data directory
 chown -R 65534:65534 /opt/prometheus
 chmod -R 775 /opt/prometheus
 
-# Run Prometheus container
+docker pull ${docker_image} || docker pull ${docker_image}
+docker rm -f prometheus 2>/dev/null || true
+
 docker run -d \
   --name prometheus \
   --restart always \
@@ -29,3 +32,7 @@ docker run -d \
   ${docker_image} \
   --config.file=/etc/prometheus/prometheus.yml \
   --storage.tsdb.path=/prometheus
+
+sleep 10
+docker ps -a
+curl -sI http://127.0.0.1:9090/-/healthy || true

@@ -8,14 +8,29 @@ variable "app_name" {
   description = "Application base name used for RDS naming and DB name composition"
 }
 
-variable "public_subnets" {
-  type        = list(string)
-  description = "The list of public subnets"
+variable "vpc_id" {
+  type        = string
+  description = "VPC ID for the ALB target group"
 }
 
-variable "nextcloud_sg_id" {
+variable "private_subnets" {
+  type        = list(string)
+  description = "Private subnet IDs for ECS tasks and EFS mount targets"
+}
+
+variable "nextcloud_alb_sg_id" {
   type        = string
-  description = "The ID of the Nextcloud security group"
+  description = "Security group ID for the Nextcloud ALB"
+}
+
+variable "nextcloud_ecs_sg_id" {
+  type        = string
+  description = "Security group ID for Nextcloud ECS tasks"
+}
+
+variable "nextcloud_efs_sg_id" {
+  type        = string
+  description = "Security group ID for Nextcloud EFS mount targets"
 }
 
 variable "db_username" {
@@ -25,7 +40,7 @@ variable "db_username" {
 
 variable "docker_image" {
   type        = string
-  description = "The Docker image to use for the Nextcloud instance"
+  description = "The Docker image to use for the Nextcloud container"
 }
 
 variable "db_password" {
@@ -39,14 +54,44 @@ variable "db_host" {
   description = "The host of the RDS instance"
 }
 
-variable "key_name" {
+variable "aws_region" {
   type        = string
-  description = "Key pair name for Nextcloud instance"
-  default     = null
+  description = "AWS region for CloudWatch Logs"
+  default     = "us-east-1"
 }
 
-variable "instance_type" {
+variable "task_cpu" {
   type        = string
-  description = "EC2 instance type for Nextcloud"
-  default     = "t3.small"
+  description = "Fargate task CPU units"
+  default     = "512"
+}
+
+variable "task_memory" {
+  type        = string
+  description = "Fargate task memory (MiB)"
+  default     = "1024"
+}
+
+variable "desired_count" {
+  type        = number
+  description = "Number of Nextcloud tasks to run"
+  default     = 1
+}
+
+variable "admin_user" {
+  type        = string
+  description = "Nextcloud admin account created on first install"
+  default     = "admin"
+}
+
+variable "admin_password" {
+  type        = string
+  description = "Nextcloud admin password created on first install"
+  default     = "admin123"
+  sensitive   = true
+}
+
+variable "permissions_boundary_arn" {
+  type        = string
+  description = "The ARN of the IAM permissions boundary (required in this account)"
 }

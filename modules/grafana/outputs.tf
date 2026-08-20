@@ -5,7 +5,7 @@ output "private_ip" {
 
 output "public_ip" {
   value       = module.ec2_instance.public_ip
-  description = "Public IP of Grafana instance"
+  description = "Public IP of Grafana instance (egress only - SG allows VPN traffic only)"
 }
 
 output "instance_id" {

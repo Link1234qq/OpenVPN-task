@@ -23,11 +23,6 @@ variable "prometheus_sg_id" {
   description = "Security group ID for Prometheus"
 }
 
-variable "nextcloud_private_ip" {
-  type        = string
-  description = "Private IP of Nextcloud instance for scraping node_exporter"
-}
-
 variable "key_name" {
   type        = string
   description = "Key pair name for Prometheus instance"

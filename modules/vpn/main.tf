@@ -31,7 +31,9 @@ module "ec2_instance" {
 
   user_data = templatefile("${path.module}/templates/user_data.sh.tpl", {
     vpn_client_cidr = var.vpn_client_cidr
-    vpc_cidr_block  = var.vpc_cidr_block
+    vpc_route_push  = "${cidrhost(var.vpc_cidr_block, 0)} ${cidrnetmask(var.vpc_cidr_block)}"
+    vpc_dns_ip      = cidrhost(var.vpc_cidr_block, 2)
+    vpn_dns_ip      = cidrhost(var.vpn_client_cidr, 1)
   })
 
   user_data_replace_on_change = true

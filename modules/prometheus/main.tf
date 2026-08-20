@@ -29,13 +29,11 @@ module "ec2_instance" {
   key_name                    = var.key_name
 
   user_data = templatefile("${path.module}/templates/user_data.sh.tpl", {
-    docker_image       = var.docker_image
-    prometheus_config  = templatefile("${path.module}/templates/prometheus.yml.tpl", {
-      nextcloud_ip = var.nextcloud_private_ip
-    })
+    docker_image      = var.docker_image
+    prometheus_config = templatefile("${path.module}/templates/prometheus.yml.tpl", {})
   })
 
-  user_data_replace_on_change = false
+  user_data_replace_on_change = true
 
   tags = {
     Name        = "${var.app_name}-${var.environment}-prometheus"

@@ -39,13 +39,13 @@ output "nextcloud_sg_id" {
 }
 
 output "nextcloud_public_ip" {
-  value       = module.compute.public_ip
-  description = "Public IP of the Nextcloud EC2 instance"
+  value       = module.compute.alb_dns_name
+  description = "DNS name of the Nextcloud Application Load Balancer"
 }
 
 output "nextcloud_url" {
-  value       = "http://${module.compute.public_ip}"
-  description = "URL to open Nextcloud in the browser"
+  value       = "http://${module.compute.alb_dns_name}"
+  description = "Nextcloud URL over VPN (connect first) - login with admin / admin123"
 }
 
 output "prometheus_private_ip" {
@@ -53,14 +53,14 @@ output "prometheus_private_ip" {
   description = "Private IP of Prometheus instance (in private subnet)"
 }
 
-output "grafana_public_ip" {
-  value       = module.grafana.public_ip
-  description = "Public IP of Grafana EC2 instance"
+output "grafana_private_ip" {
+  value       = module.grafana.private_ip
+  description = "Private IP of Grafana EC2 instance (use this over VPN)"
 }
 
 output "grafana_url" {
-  value       = "http://${module.grafana.public_ip}:3000"
-  description = "Grafana URL - login with admin / admin123"
+  value       = "http://${module.grafana.private_ip}:3000"
+  description = "Grafana URL (connect via VPN first) - login with admin / admin123"
 }
 
 output "openvpn_public_ip" {

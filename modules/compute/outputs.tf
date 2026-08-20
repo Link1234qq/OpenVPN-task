@@ -1,14 +1,19 @@
-output "public_ip" {
-  value       = module.ec2_instance.public_ip
-  description = "Public IP of the Nextcloud EC2 instance"
+output "alb_dns_name" {
+  value       = aws_lb.nextcloud.dns_name
+  description = "DNS name of the Nextcloud Application Load Balancer"
 }
 
-output "private_ip" {
-  value       = module.ec2_instance.private_ip
-  description = "Private IP for Prometheus scrape targets"
+output "alb_arn" {
+  value       = aws_lb.nextcloud.arn
+  description = "ARN of the Nextcloud ALB"
 }
 
-output "instance_id" {
-  value       = module.ec2_instance.id
-  description = "EC2 instance ID"
+output "ecs_cluster_name" {
+  value       = aws_ecs_cluster.nextcloud.name
+  description = "Name of the ECS cluster running Nextcloud"
+}
+
+output "ecs_service_name" {
+  value       = aws_ecs_service.nextcloud.name
+  description = "Name of the ECS Fargate service"
 }
